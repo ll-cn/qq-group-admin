@@ -85,7 +85,14 @@ joinRequest:
     - "风险：{risk}"
     - "{bot}"
 
-# 入群欢迎（默认关闭；{user} 会替换成「@新成员」）
+# 入群欢迎（默认关闭；{user} 会替换成新成员昵称）
 welcome:
   enabled: false
+  # 是否 @ 新成员（走 markdown 消息，需要机器人有 markdown 能力）
+  mention: true
   text: "欢迎 {user} 加入本群，先看看群公告哦～"
+
+# 退群通知（默认关闭；{user} 会替换成成员昵称）
+leave:
+  enabled: false
+  text: "{user} 退出了群聊"
