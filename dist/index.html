@@ -234,7 +234,7 @@
       const keys = el.dataset.f.split('.')
       let cur = body
       for (let i = 0; i < keys.length - 1; i += 1) cur = cur[keys[i]] ??= {}
-      cur[keys.at(-1)] = el.type === 'checkbox' ? el.checked : el.value
+      cur[keys[keys.length - 1]] = el.type === 'checkbox' ? el.checked : el.value
     }
     return body
   }
