@@ -42,7 +42,9 @@ apps:
 
 重启机器人。启动日志里出现 `[官方群管] v1.0.0 已加载` 就是好了。
 
-首次启动会自动生成 `config/config.yaml`（随包已带一份默认的）。
+首次启动会自动生成 `config/config.yaml`（带完整注释的默认配置）。
+
+**`config/config.yaml` 不随包分发、也不进 git**——它是你自己的运行配置（面板保存就写它）。这样用 git 拉取方式更新插件时，永远不会因为配置被改动而冲突。
 
 ## 三、指令
 
@@ -286,5 +288,6 @@ welcome:                   # 入群欢迎
 | 一个人进群收到两条欢迎 | 插件和云崽的 `进群退群通知.js` 同时开了。插件开着会自动接管，正常不会重复；若仍在重复，说明插件那条没发出去（看日志「没发出去，事件交回后续处理」） |
 | 网页面板打不开（404） | 端口用错。面板在 `serverPort`（默认 18110）上，不是 `port`/`server.port`（那是 CBP/WebSocket，17117） |
 | 面板要口令 | `config/config.yaml` 的 `web.token` 设了值。URL 加 `?token=xxx` 进入，或清空 token 恢复开放 |
+| 更新插件报「Your local changes to config/config.yaml would be overwritten」 | 旧版本把 config 打进了包，而你改过配置。一次性处理：进插件目录 `git checkout -- config/config.yaml` 再点更新（本地改动会被重置，更新完到面板重新保存一次即可）。v1.9.6 起配置不进包，以后不会再发生 |
 | 退群显示「某位群友」 | 官方事件不带昵称，该成员从没在群里发过言，插件没记到名字 |
 | 云崽那份 `进群退群通知` 里的 `notice.group.member.increase` 不生效 | 桥接只把成员事件发成 `notice.group_increase` / `notice.group_decrease`，`notice.group.member.*` 永远不会触发，那几个类可以直接删 |
