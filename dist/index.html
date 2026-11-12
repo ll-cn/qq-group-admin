@@ -183,6 +183,11 @@
         <label>访问口令</label><input type="text" data-f="web.token" placeholder="留空 = 不校验" />
         <span class="hint">这个面板和 alemon 的接口一样暴露在 serverPort 端口上，机器人不在本机时建议设一个口令</span>
       </div>
+      <div class="row">
+        <label>expose 写接口</label>
+        <span class="switch"><input type="checkbox" data-f="expose.writes" /><i></i></span>
+        <span class="hint">允许其它插件或 AI 直接调用禁言/踢人等写操作（读接口不受影响）。给 AI 开权限时才打开</span>
+      </div>
     </div>
 
     <div class="actions">
