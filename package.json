@@ -1,0 +1,35 @@
+{
+  "name": "qq-group-admin",
+  "version": "1.6.2",
+  "description": "QQ 官方机器人群管：禁言 / 全员禁言 / 踢人 / 黑名单 / 自动群管",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "require": "./lib/index.js"
+    },
+    "./package": "./package.json"
+  },
+  "files": [
+    "lib",
+    "config",
+    "README.md"
+  ],
+  "keywords": [
+    "alemonjs",
+    "alemon",
+    "qq-bot",
+    "群管"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ll-cn/qq-group-admin.git"
+  },
+  "homepage": "https://github.com/ll-cn/qq-group-admin",
+  "bugs": "https://github.com/ll-cn/qq-group-admin/issues",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
