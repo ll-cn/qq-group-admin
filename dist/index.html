@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>官方群管 · 配置面板</title>
+<style>
+  :root {
+    --bg: #f5f7fb; --card: #ffffff; --line: #e5eaf3;
+    --text: #2a3550; --muted: #7c86a2; --brand: #3b82f6;
+    --ok: #16a34a; --err: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px 16px 60px; background: var(--bg); color: var(--text);
+    font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; font-size: 14px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+  h1 { font-size: 20px; margin: 0; }
+  .ver { color: var(--muted); font-size: 12px; }
+  .sub { color: var(--muted); font-size: 12px; margin-bottom: 18px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 18px; margin-bottom: 14px;
+  }
+  .card h2 { font-size: 15px; margin: 0 0 4px; }
+  .card .desc { color: var(--muted); font-size: 12px; margin: 0 0 12px; }
+  .row { display: flex; align-items: center; gap: 12px; margin: 10px 0; flex-wrap: wrap; }
+  .row label { min-width: 170px; }
+  .hint { color: var(--muted); font-size: 12px; flex: 1; min-width: 200px; }
+  input[type="text"], input[type="number"], textarea, input[type="password"] {
+    border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; font-size: 13px;
+    font-family: inherit; background: #fff; color: var(--text);
+  }
+  input[type="number"] { width: 110px; }
+  input[type="text"], input[type="password"] { width: 300px; }
+  textarea { width: 100%; min-height: 88px; resize: vertical; line-height: 1.7; }
+  .num-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .num-item { display: flex; align-items: center; gap: 6px; }
+  .num-item span { color: var(--muted); font-size: 12px; }
+  .switch { position: relative; width: 40px; height: 22px; flex: 0 0 auto; }
+  .switch input { display: none; }
+  .switch i {
+    position: absolute; inset: 0; background: #cbd5e1; border-radius: 11px; transition: .2s; cursor: pointer;
+  }
+  .switch i::after {
+    content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
+    background: #fff; border-radius: 50%; transition: .2s;
+  }
+  .switch input:checked + i { background: var(--brand); }
+  .switch input:checked + i::after { left: 20px; }
+  .actions { position: sticky; bottom: 0; padding: 12px 0; }
+  .actions button {
+    background: var(--brand); color: #fff; border: none; border-radius: 9px;
+    padding: 10px 26px; font-size: 14px; cursor: pointer;
+  }
+  .actions button:disabled { opacity: .6; cursor: default; }
+  #msg { margin-left: 12px; font-size: 13px; }
+  #msg.ok { color: var(--ok); } #msg.err { color: var(--err); }
+  #tokenBox {
+    display: none; background: #fff7ed; border: 1px solid #fdba74; border-radius: 12px;
+    padding: 16px 18px; margin-bottom: 14px;
+  }
+  .stat { display: flex; gap: 18px; flex-wrap: wrap; }
+  .stat span { color: var(--muted); font-size: 12px; }
+  .stat b { color: var(--text); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>官方群管 · 配置面板</h1>
+    <span class="ver" id="ver"></span>
+  </header>
+  <p class="sub">改动保存后即时生效，不需要重启机器人。<span class="stat" id="stat"></span></p>
+
+  <div id="tokenBox">
+    <div class="row" style="margin: 0;">
+      <label>面板口令</label>
+      <input type="password" id="tokenInput" placeholder="config.yaml 里的 web.token" />
+      <button class="ghost" id="tokenBtn" style="border:1px solid var(--line);border-radius:8px;padding:7px 14px;cursor:pointer;">进入</button>
+    </div>
+  </div>
+
+  <div id="panel" style="display:none">
+    <div class="card">
+      <h2>禁言与成员</h2>
+      <div class="row">
+        <label>默认禁言时长（秒）</label><input type="number" data-f="defaultMuteSeconds" min="0" />
+        <span class="hint">指令不写时长时用它</span>
+      </div>
+      <div class="row">
+        <label>单次最长禁言（秒）</label><input type="number" data-f="maxMuteSeconds" min="60" />
+        <span class="hint">官方上限 30 天（2592000），别调大</span>
+      </div>
+      <div class="row">
+        <label>禁言后回查校验</label>
+        <span class="switch"><input type="checkbox" data-f="verifyAfterMute" /><i></i></span>
+        <span class="hint">处置后确认真的生效，建议开</span>
+      </div>
+      <div class="row">
+        <label>成员列表缓存（秒）</label><input type="number" data-f="memberCacheSeconds" min="0" />
+        <label style="min-width:auto">翻页上限</label><input type="number" data-f="memberMaxPages" min="1" style="width:70px" />
+        <span class="hint">每页 30 人；列表接口要白名单，报 11253 就是没权限</span>
+      </div>
+      <div class="row">
+        <label>额外管理员 openid</label>
+        <span class="hint">一行一个；机器人主人始终可用。openid 在群里发「#群成员 openid」能拿到</span>
+        <textarea data-f="admins" placeholder="一行一个 openid"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>自动群管（各群初始默认值）</h2>
+      <p class="desc">每个群可用「#群管开关」单独开关；管理员发言永远豁免</p>
+      <div class="row">
+        <label>默认开启</label>
+        <span class="switch"><input type="checkbox" data-f="auto.enabled" /><i></i></span>
+        <span class="hint">只对新配置的群生效</span>
+      </div>
+      <div class="row">
+        <label>刷屏判定</label>
+        <div class="num-group">
+          <span class="num-item"><input type="number" data-f="auto.floodSeconds" min="1" style="width:70px" /><span>秒内</span></span>
+          <span class="num-item"><input type="number" data-f="auto.floodCount" min="2" style="width:70px" /><span>条 →</span></span>
+          <span class="num-item"><input type="number" data-f="auto.floodMuteSeconds" min="0" style="width:90px" /><span>秒禁言</span></span>
+        </div>
+      </div>
+      <div class="row">
+        <label>违禁词禁言（秒）</label><input type="number" data-f="auto.bannedMuteSeconds" min="0" />
+        <span class="hint">写 0 表示第一次只警告不禁言</span>
+      </div>
+      <div class="row">
+        <label>违禁词列表</label>
+        <span class="hint">一行一个词，命中即触发</span>
+        <textarea data-f="auto.words" placeholder="一行一个词"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>入群申请</h2>
+      <p class="desc">机器人必须是群管理员，官方才会推送申请事件</p>
+      <div class="row">
+        <label>申请通知</label>
+        <span class="switch"><input type="checkbox" data-f="joinRequest.notify" /><i></i></span>
+        <label style="min-width:auto;margin-left:18px">通知带按钮</label>
+        <span class="switch"><input type="checkbox" data-f="joinRequest.buttons" /><i></i></span>
+        <span class="hint">按钮可直达「通过 / 拒绝」；没 markdown 权限会自动退回纯文本</span>
+      </div>
+      <div class="row">
+        <label>通知文案</label>
+        <span class="hint">一行一项；{name} 昵称、{verify} 验证消息、{qa} 问答、{source} 来源、{risk} 风险、{bot} 机器人标记。某行的变量全为空时整行不显示</span>
+        <textarea data-f="joinRequest.template" style="min-height:120px"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>入群欢迎 / 退群通知</h2>
+      <p class="desc">打开即接管：云崽自带的「进群退群通知」不会再发，避免重复</p>
+      <div class="row">
+        <label>入群欢迎</label>
+        <span class="switch"><input type="checkbox" data-f="welcome.enabled" /><i></i></span>
+        <label style="min-width:auto;margin-left:18px">@ 新成员</label>
+        <span class="switch"><input type="checkbox" data-f="welcome.mention" /><i></i></span>
+      </div>
+      <div class="row">
+        <label>欢迎文案</label><input type="text" data-f="welcome.text" style="width:100%" />
+      </div>
+      <div class="row">
+        <label>退群通知</label>
+        <span class="switch"><input type="checkbox" data-f="leave.enabled" /><i></i></span>
+        <span class="hint">昵称来自平时群消息的记录，没记录显示「某位群友」</span>
+      </div>
+      <div class="row">
+        <label>退群文案</label><input type="text" data-f="leave.text" style="width:100%" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>网页面板</h2>
+      <div class="row">
+        <label>访问口令</label><input type="text" data-f="web.token" placeholder="留空 = 不校验" />
+        <span class="hint">这个面板和 alemon 的接口一样暴露在 serverPort 端口上，机器人不在本机时建议设一个口令</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="save">保存配置</button>
+      <span id="msg"></span>
+    </div>
+  </div>
+</div>
+<script>
+  const TOKEN_KEY = 'qq-group-admin.panel-token'
+  let token = ''
+  const params = new URLSearchParams(location.search)
+  if (params.get('token')) {
+    token = params.get('token')
+    localStorage.setItem(TOKEN_KEY, token)
+    location.replace(location.pathname)
+  } else {
+    token = localStorage.getItem(TOKEN_KEY) || ''
+  }
+
+  const $ = (sel) => document.querySelector(sel)
+  const fields = [...document.querySelectorAll('[data-f]')]
+  const val = (f) => fields.find((el) => el.dataset.f === f)
+
+  function headers() {
+    const h = { 'Content-Type': 'application/json' }
+    if (token) h['x-panel-token'] = token
+    return h
+  }
+  async function api(path, options) {
+    const res = await fetch(path, { headers: headers(), ...options })
+    const json = await res.json().catch(() => ({ code: res.status, message: '响应解析失败' }))
+    return { status: res.status, ...json }
+  }
+
+  function fill(config) {
+    for (const el of fields) {
+      const keys = el.dataset.f.split('.')
+      let v = config
+      for (const k of keys) v = v?.[k]
+      if (el.type === 'checkbox') el.checked = v !== false
+      else el.value = v === undefined || v === null ? '' : Array.isArray(v) ? v.join('\n') : String(v)
+    }
+  }
+
+  function collect() {
+    const body = {}
+    for (const el of fields) {
+      const keys = el.dataset.f.split('.')
+      let cur = body
+      for (let i = 0; i < keys.length - 1; i += 1) cur = cur[keys[i]] ??= {}
+      cur[keys.at(-1)] = el.type === 'checkbox' ? el.checked : el.value
+    }
+    return body
+  }
+
+  function setMsg(ok, text) {
+    const el = $('#msg')
+    el.textContent = text
+    el.className = ok ? 'ok' : 'err'
+  }
+
+  async function boot() {
+    let data = null
+    try {
+      const res = await api('./api/status')
+      if (res.status === 401 || res.code === 401) {
+        $('#tokenBox').style.display = 'block'
+        $('#tokenInput').focus()
+        return
+      }
+      if (res.code !== 200) {
+        $('#tokenBox').style.display = 'block'
+        $('#tokenInput').parentElement.querySelector('label').textContent = `加载失败：${res.message}`
+        return
+      }
+      data = res.data
+    } catch (err) {
+      $('#panel').style.display = 'block'
+      setMsg(false, `接口连不上（${err.message}）。确认机器人正在运行、端口是 serverPort（默认 18110）`)
+      return
+    }
+    $('#panel').style.display = 'block'
+    $('#ver').textContent = `v${data.version} · ${data.plugin}`
+    $('#stat').innerHTML = `已配置群 <b>${data.groups}</b> 个 · 已记昵称 <b>${data.nicknames}</b> 条`
+    const cfg = await api('./api/config')
+    if (cfg.code === 200) fill(cfg.data.config)
+    else setMsg(false, `配置读取失败：${cfg.message}`)
+  }
+
+  $('#tokenBtn').addEventListener('click', () => {
+    token = $('#tokenInput').value.trim()
+    localStorage.setItem(TOKEN_KEY, token)
+    boot()
+  })
+
+  $('#save').addEventListener('click', async (event) => {
+    const btn = event.target
+    btn.disabled = true
+    setMsg(true, '保存中…')
+    try {
+      const res = await api('./api/config', { method: 'POST', body: JSON.stringify(collect()) })
+      if (res.code === 200) {
+        fill(res.data.config)
+        setMsg(true, res.message)
+      } else if (res.status === 401 || res.code === 401) {
+        setMsg(false, '口令不对，请刷新页面重新输入')
+      } else {
+        setMsg(false, `保存失败：${res.message}`)
+      }
+    } catch (err) {
+      setMsg(false, `保存失败：${err.message}`)
+    } finally {
+      btn.disabled = false
+    }
+  })
+
+  boot()
+</script>
+</body>
+</html>
