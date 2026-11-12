@@ -85,8 +85,8 @@ joinRequest:
 welcome:
   enabled: true
   # 是否 @ 新成员（走 markdown 消息，需要机器人有 markdown 能力）
-  mention: true
-  text: "欢迎 {user} 加入本群，先看看群公告哦～"
+  mention: false
+  text: "欢迎 {user}"
 
 # 退群通知（默认关闭；{user} 会替换成成员昵称）
 # 官方事件不带昵称，昵称取自该成员平时在群里发消息时的记录，查不到显示「某位群友」
