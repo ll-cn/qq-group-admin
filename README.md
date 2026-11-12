@@ -170,14 +170,14 @@ joinRequest:
 
 ### 入群欢迎 / 退群通知
 
-官方会推 `GROUP_MEMBER_ADD` / `GROUP_MEMBER_REMOVE`（这条不需要管理员身份），插件可以自动发欢迎和退群提示。两个都默认关闭：
+官方会推 `GROUP_MEMBER_ADD` / `GROUP_MEMBER_REMOVE`（这条不需要管理员身份），插件可以自动发欢迎和退群提示。入群欢迎默认开启，退群通知默认关闭：
 
 ```yaml
 welcome:
   enabled: true
   # 是否 @ 新成员（走 markdown 消息）
   mention: true
-  text: "欢迎 {user} 加入本群，先看看群公告哦～"
+  text: "欢迎 {user} 加入本群，可以发#帮助查看机器人功能"
 
 leave:
   enabled: true
@@ -257,7 +257,7 @@ auto:                      # 自动群管的各群初始默认值
   words: []
 welcome:                   # 入群欢迎
   enabled: false
-  text: "欢迎 {user} 加入本群，先看看群公告哦～"
+  text: "欢迎 {user} 加入本群，可以发#帮助查看机器人功能"
 ```
 
 群级数据（每群的开关、违禁词、统计）落在 `data/groups/<group_openid>.json`，删掉就回到默认值。
