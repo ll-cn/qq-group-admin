@@ -278,11 +278,11 @@ if (provider) {
 ```
 
 **读接口**默认开放：`group_info`、`bot_state`、`mute_state`、`member_list`、`ban_list`、`join_requests`、`stats`。
-**写接口**默认关闭（面板或 `config.yaml` 的 `expose.writes: true` 打开）：`mute`、`unmute`、`kick`、`ban`、`unban`、`set_all_mute`、`approve_join`、`reject_join`。
+**写接口**也默认开启（面板或 `config.yaml` 的 `expose.writes: false` 可关闭）：`mute`、`unmute`、`kick`、`ban`、`unban`、`set_all_mute`、`approve_join`、`reject_join`。
 
 - 统一返回 `{ status: 'success', data }` 或 `{ status: 'error', code, message }`，不抛异常
 - 参数格式用 `client.list('qq-group-admin')[0].actions` 里的 `params` 说明
-- 写接口绕过聊天指令的"群管理员"校验，给 AI 开之前想清楚；不用时在面板关掉
+- 写接口绕过聊天指令的"群管理员"校验——默认全开是为了让 AI 开箱即用；介意的话在面板关掉
 
 ## 五、权限是怎么判的
 
