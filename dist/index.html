@@ -27,7 +27,7 @@
   .card h2 { font-size: 15px; margin: 0 0 4px; }
   .card .desc { color: var(--muted); font-size: 12px; margin: 0 0 12px; }
   .row { display: flex; align-items: center; gap: 12px; margin: 10px 0; flex-wrap: wrap; }
-  .row label { min-width: 170px; }
+  .row label:not(.switch) { min-width: 170px; }
   .hint { color: var(--muted); font-size: 12px; flex: 1; min-width: 200px; }
   input[type="text"], input[type="number"], textarea, input[type="password"] {
     border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; font-size: 13px;
@@ -39,7 +39,7 @@
   .num-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .num-item { display: flex; align-items: center; gap: 6px; }
   .num-item span { color: var(--muted); font-size: 12px; }
-  .switch { position: relative; width: 40px; height: 22px; flex: 0 0 auto; }
+  .switch { position: relative; display: inline-block; width: 40px; height: 22px; flex: 0 0 auto; cursor: pointer; }
   .switch input { display: none; }
   .switch i {
     position: absolute; inset: 0; background: #cbd5e1; border-radius: 11px; transition: .2s; cursor: pointer;
@@ -96,7 +96,7 @@
       </div>
       <div class="row">
         <label>禁言后回查校验</label>
-        <span class="switch"><input type="checkbox" data-f="verifyAfterMute" /><i></i></span>
+        <label class="switch"><input type="checkbox" data-f="verifyAfterMute" /><i></i></label>
         <span class="hint">处置后确认真的生效，建议开</span>
       </div>
       <div class="row">
@@ -116,7 +116,7 @@
       <p class="desc">每个群可用「#群管开关」单独开关；管理员发言永远豁免</p>
       <div class="row">
         <label>默认开启</label>
-        <span class="switch"><input type="checkbox" data-f="auto.enabled" /><i></i></span>
+        <label class="switch"><input type="checkbox" data-f="auto.enabled" /><i></i></label>
         <span class="hint">只对新配置的群生效</span>
       </div>
       <div class="row">
@@ -143,9 +143,9 @@
       <p class="desc">机器人必须是群管理员，官方才会推送申请事件</p>
       <div class="row">
         <label>申请通知</label>
-        <span class="switch"><input type="checkbox" data-f="joinRequest.notify" /><i></i></span>
+        <label class="switch"><input type="checkbox" data-f="joinRequest.notify" /><i></i></label>
         <label style="min-width:auto;margin-left:18px">通知带按钮</label>
-        <span class="switch"><input type="checkbox" data-f="joinRequest.buttons" /><i></i></span>
+        <label class="switch"><input type="checkbox" data-f="joinRequest.buttons" /><i></i></label>
         <span class="hint">按钮可直达「通过 / 拒绝」；没 markdown 权限会自动退回纯文本</span>
       </div>
       <div class="row">
@@ -160,16 +160,16 @@
       <p class="desc">打开即接管：云崽自带的「进群退群通知」不会再发，避免重复</p>
       <div class="row">
         <label>入群欢迎</label>
-        <span class="switch"><input type="checkbox" data-f="welcome.enabled" /><i></i></span>
+        <label class="switch"><input type="checkbox" data-f="welcome.enabled" /><i></i></label>
         <label style="min-width:auto;margin-left:18px">@ 新成员</label>
-        <span class="switch"><input type="checkbox" data-f="welcome.mention" /><i></i></span>
+        <label class="switch"><input type="checkbox" data-f="welcome.mention" /><i></i></label>
       </div>
       <div class="row">
         <label>欢迎文案</label><input type="text" data-f="welcome.text" style="width:100%" />
       </div>
       <div class="row">
         <label>退群通知</label>
-        <span class="switch"><input type="checkbox" data-f="leave.enabled" /><i></i></span>
+        <label class="switch"><input type="checkbox" data-f="leave.enabled" /><i></i></label>
         <span class="hint">昵称来自平时群消息的记录，没记录显示「某位群友」</span>
       </div>
       <div class="row">
