@@ -223,7 +223,15 @@ leave:
 
 ## 四、配置
 
-`config/config.yaml`（改完保存即生效，每次指令都会检查文件变动）：
+**推荐直接在网页里改**：浏览器打开
+
+```
+http://<机器人地址>:<serverPort>/apps/qq-group-admin/
+```
+
+`serverPort` 就是 `alemon.config.yaml` 里的那个（默认 18110）。页面上可以改所有配置，保存即时生效，不用重启；注释也不会被冲掉。面板默认没有口令——它和 alemon 的接口一样暴露在 `serverPort` 端口上，机器人不在本机时建议在面板最后一栏设个 `web.token`。
+
+也可以手改 `config/config.yaml`（改完保存即生效，每次指令都会检查文件变动）：
 
 ```yaml
 admins: []                 # 额外管理员 openid（机器人主人始终可用）
@@ -270,5 +278,7 @@ welcome:                   # 入群欢迎
 | 昵称解析不出人 | 成员列表没权限，或昵称有重名（会提示改用 #序号 / openid） |
 | 点按钮没反应 | 群聊只认回调按钮，框架默认给的是 `command`（指令按钮），代码里已显式指定 `call`；自己加按钮时别忘了 |
 | 一个人进群收到两条欢迎 | 插件和云崽的 `进群退群通知.js` 同时开了。插件开着会自动接管，正常不会重复；若仍在重复，说明插件那条没发出去（看日志「没发出去，事件交回后续处理」） |
+| 网页面板打不开（404） | 端口用错。面板在 `serverPort`（默认 18110）上，不是 `port`/`server.port`（那是 CBP/WebSocket，17117） |
+| 面板要口令 | `config/config.yaml` 的 `web.token` 设了值。URL 加 `?token=xxx` 进入，或清空 token 恢复开放 |
 | 退群显示「某位群友」 | 官方事件不带昵称，该成员从没在群里发过言，插件没记到名字 |
 | 云崽那份 `进群退群通知` 里的 `notice.group.member.increase` 不生效 | 桥接只把成员事件发成 `notice.group_increase` / `notice.group_decrease`，`notice.group.member.*` 永远不会触发，那几个类可以直接删 |
