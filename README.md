@@ -46,6 +46,17 @@ apps:
 
 **`config/config.yaml` 不随包分发、也不进 git**——它是你自己的运行配置（面板保存就写它）。这样用 git 拉取方式更新插件时，永远不会因为配置被改动而冲突。
 
+目录结构与 alemonjs-cheese 相同：
+
+```
+config/
+├── default_config/
+│   └── config.yaml   ← 随包分发的默认模板（带完整注释，勿改，更新时同步最新默认值）
+└── config.yaml       ← 你的运行配置（首运自动从模板复制，面板保存写这里）
+```
+
+想看某个版本的默认值长什么样，直接翻 `default_config/config.yaml`；把你想要的段落抄进自己的 `config.yaml` 即可。
+
 ## 三、指令
 
 `#群管帮助` 默认渲染成一张图片（jsxp 的 `renderHtmlToBuffer` + Playwright 截图，828 宽 @2x）。渲染失败——没装 `jsxp`、找不到浏览器、截图报错——会自动退回纯文本，不会没有响应。
