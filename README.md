@@ -262,6 +262,28 @@ welcome:                   # 入群欢迎
 
 群级数据（每群的开关、违禁词、统计）落在 `data/groups/<group_openid>.json`，删掉就回到默认值。
 
+## 四点五、对外接口（expose）
+
+插件注册了 `qq-group-admin` 协议，其它插件或 AI 可以直接调用群管能力（类似 MCP 的插件间通信，框架 `Expose` 机制）：
+
+```js
+import { Expose } from 'alemonjs'
+
+const client = Expose.create()
+const provider = client.list('qq-group-admin')[0]
+if (provider) {
+  const result = await provider.invoke('group_info', { guildId: '群openid' })
+  // { status: 'success', data: { groupName, memberCount, ... } }
+}
+```
+
+**读接口**默认开放：`group_info`、`bot_state`、`mute_state`、`member_list`、`ban_list`、`join_requests`、`stats`。
+**写接口**默认关闭（面板或 `config.yaml` 的 `expose.writes: true` 打开）：`mute`、`unmute`、`kick`、`ban`、`unban`、`set_all_mute`、`approve_join`、`reject_join`。
+
+- 统一返回 `{ status: 'success', data }` 或 `{ status: 'error', code, message }`，不抛异常
+- 参数格式用 `client.list('qq-group-admin')[0].actions` 里的 `params` 说明
+- 写接口绕过聊天指令的"群管理员"校验，给 AI 开之前想清楚；不用时在面板关掉
+
 ## 五、权限是怎么判的
 
 按顺序，命中任意一条就能用：
