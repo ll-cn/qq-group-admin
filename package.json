@@ -1,6 +1,6 @@
 {
   "name": "qq-group-admin",
-  "version": "1.9.4",
+  "version": "1.9.5",
   "description": "QQ 官方机器人群管：禁言 / 全员禁言 / 踢人 / 黑名单 / 自动群管",
   "type": "module",
   "main": "lib/index.js",
