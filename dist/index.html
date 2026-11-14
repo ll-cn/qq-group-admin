@@ -178,6 +178,16 @@
     </div>
 
     <div class="card">
+      <h2>待授权的管理员</h2>
+      <p class="desc">有人用管理指令/按钮被拒时会自动记在这里（官方接口拿不到群内角色时只能靠名单），点一下就加进管理员</p>
+      <div id="deniedList" style="margin-top:6px"></div>
+      <div class="row" style="margin-top:4px">
+        <button id="deniedRefresh" style="border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 14px;cursor:pointer;">刷新列表</button>
+        <span class="hint" id="deniedHint"></span>
+      </div>
+    </div>
+
+    <div class="card">
       <h2>网页面板</h2>
       <div class="row">
         <label>访问口令</label><input type="text" data-f="web.token" placeholder="留空 = 不校验" />
@@ -276,6 +286,7 @@
     const cfg = await api('./api/config')
     if (cfg.code === 200) fill(cfg.data.config)
     else setMsg(false, `配置读取失败：${cfg.message}`)
+    loadDenied()
   }
 
   $('#tokenBtn').addEventListener('click', () => {
@@ -283,6 +294,40 @@
     localStorage.setItem(TOKEN_KEY, token)
     boot()
   })
+
+  async function loadDenied() {
+    const box = $('#deniedList')
+    const res = await api('./api/denied')
+    if (res.code !== 200) {
+      box.innerHTML = `<span class="hint">读取失败：${res.message}</span>`
+      return
+    }
+    const items = res.data.items ?? []
+    if (!items.length) {
+      box.innerHTML = '<span class="hint">暂无待授权的用户</span>'
+      return
+    }
+    box.innerHTML = items.map((item) => {
+      const when = new Date(item.at).toLocaleString('zh-CN', { hour12: false })
+      return `<div class="row" style="margin:6px 0">
+        <code style="font-size:12px;background:#f1f5f9;padding:4px 8px;border-radius:6px;">${item.openid}</code>
+        <span class="hint">${when}</span>
+        <button class="grant" data-openid="${item.openid}" style="border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 12px;cursor:pointer;">加为管理员</button>
+      </div>`
+    }).join('')
+    for (const btn of box.querySelectorAll('.grant')) {
+      btn.addEventListener('click', async () => {
+        btn.disabled = true
+        const r = await api('./api/denied/approve', { method: 'POST', body: JSON.stringify({ openid: btn.dataset.openid }) })
+        $('#deniedHint').textContent = r.code === 200 ? r.message : `失败：${r.message}`
+        loadDenied()
+        const cfg = await api('./api/config')
+        if (cfg.code === 200) fill(cfg.data.config)
+      })
+    }
+  }
+
+  $('#deniedRefresh').addEventListener('click', loadDenied)
 
   $('#save').addEventListener('click', async (event) => {
     const btn = event.target
