@@ -286,7 +286,7 @@ welcome:                   # 入群欢迎
 
 ## 四点五、对外接口（expose）
 
-插件注册了 `qq-group-admin` 协议，其它插件或 AI 可以直接调用群管能力（类似 MCP 的插件间通信，框架 `Expose` 机制）：
+插件注册了 `qq-group-admin` 协议（框架 `Expose` 机制，AI 可用 `Expose.create().schema()` 自动发现），其它插件或 AI 可以直接调用群管能力（类似 MCP 的插件间通信，框架 `Expose` 机制）：
 
 ```js
 import { Expose } from 'alemonjs'
@@ -298,6 +298,8 @@ if (provider) {
   // { status: 'success', data: { groupName, memberCount, ... } }
 }
 ```
+
+**`help` 动作**给 AI/其它插件用：返回插件名、版本、全部群管指令（按分段）和 16 个动作名，AI 拿到它就能回答「群管插件怎么用」，不用猜。
 
 **读接口**默认开放：`group_info`、`bot_state`、`mute_state`、`member_list`、`ban_list`、`join_requests`、`stats`。
 **写接口**也默认开启（面板或 `config.yaml` 的 `expose.writes: false` 可关闭）：`mute`、`unmute`、`kick`、`ban`、`unban`、`set_all_mute`、`approve_join`、`reject_join`。
