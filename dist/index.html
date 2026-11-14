@@ -149,6 +149,11 @@
         <span class="hint">按钮可直达「通过 / 拒绝」；没 markdown 权限会自动退回纯文本</span>
       </div>
       <div class="row">
+        <label>自动撤回</label>
+        <input type="number" data-f="joinRequest.autoRecallSeconds" min="0" max="3600" step="5" style="max-width:110px" />
+        <span class="hint">秒。通知卡片这么久没人处理就自动撤回（0 = 不撤回）；审批后卡片也会立刻撤回</span>
+      </div>
+      <div class="row">
         <label>通知文案</label>
         <span class="hint">一行一项；{name} 昵称、{verify} 验证消息、{qa} 问答、{source} 来源、{risk} 风险、{bot} 机器人标记。某行的变量全为空时整行不显示</span>
         <textarea data-f="joinRequest.template" style="min-height:120px"></textarea>
