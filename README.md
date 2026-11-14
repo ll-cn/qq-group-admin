@@ -61,6 +61,8 @@ config/
 
 `#群管帮助` 默认渲染成一张图片（jsxp 的 `renderHtmlToBuffer` + Playwright 截图，828 宽 @2x）。渲染失败——没装 `jsxp`、找不到浏览器、截图报错——会自动退回纯文本，不会没有响应。
 
+**`#群管帮助 文字`（或 `/群管帮助 text`）直接发纯文本**：图片里的文字 AI 读不出来，让 AI 助手回答「这个插件怎么用」时用文字版。
+
 浏览器由 jsxp 自己探测（Chrome / Chromium / Edge 都会找）。部署机如果没有浏览器，可以指定：
 
 ```bash
@@ -299,7 +301,7 @@ if (provider) {
 }
 ```
 
-**`help` 动作**给 AI/其它插件用：返回插件名、版本、全部群管指令（按分段）和 16 个动作名，AI 拿到它就能回答「群管插件怎么用」，不用猜。
+**`help` 动作**给 AI/其它插件用：返回插件名、版本、命令前缀、可直接朗读的 `text`（纯文本帮助，887 字）、按分段的结构化指令表和 16 个动作名，AI 拿到就能回答「群管插件怎么用」，不用读图也不用猜。
 
 **读接口**默认开放：`group_info`、`bot_state`、`mute_state`、`member_list`、`ban_list`、`join_requests`、`stats`。
 **写接口**也默认开启（面板或 `config.yaml` 的 `expose.writes: false` 可关闭）：`mute`、`unmute`、`kick`、`ban`、`unban`、`set_all_mute`、`approve_join`、`reject_join`。
